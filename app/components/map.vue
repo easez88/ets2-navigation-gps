@@ -6,12 +6,15 @@ import type TruckMarker from "./truckMarker.vue";
 import SpeedLimit from "./speedLimit.vue";
 import { usePlatform } from "~/composables/Platform";
 import eruda from "eruda";
+import { AppSettings } from "~~/shared/variables/appSettings";
+import { blendWithBg, lightenColor } from "~/assets/utils/colors";
 
 defineProps<{ goHome: () => void }>();
 
 // MAP STATE
 const mapEl = ref<HTMLElement | null>(null);
 const map = shallowRef<maplibregl.Map | null>(null);
+const isSettingsPanelOpened = ref(false);
 
 // UI STATE
 const isSheetExpanded = ref(false);
@@ -156,6 +159,31 @@ watch(
     },
 );
 
+// We check each time the theme color changes to udate the map libre appsettings.default theme color
+watch(
+    () => AppSettings.theme.defaultColor,
+    (newColor) => {
+        if (!map.value) return;
+
+        if (map.value.getLayer("city-points")) {
+            map.value.setPaintProperty("city-points", "circle-color", newColor);
+        }
+
+        if (map.value.getLayer("capital-points")) {
+            map.value.setPaintProperty(
+                "capital-points",
+                "circle-color",
+                newColor,
+            );
+        }
+
+        if (map.value.getLayer("prefab-zones")) {
+            const blended = blendWithBg(lightenColor(newColor, 0.3), 0.6);
+            map.value.setPaintProperty("prefab-zones", "fill-color", blended);
+        }
+    },
+);
+
 // We set the routeFound back to null with a delay if its true / false.
 watch(routeFound, (newVal) => {
     if (newVal !== null) {
@@ -211,7 +239,6 @@ onMounted(async () => {
             console.log(
                 ` ${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`,
             ); // KEEP FOR DEBUGGING BUGGED AREAS
-            // if (hasActiveJob.value) return;
             if (!isClickingEnabled.value) return;
             if (!truckMarker.value) return;
 
@@ -296,6 +323,14 @@ const onToggleFullscreen = async () => {
         console.error("Fullscreen error:", err);
     }
 };
+
+const openSettingsPanel = () => {
+    isSettingsPanelOpened.value = true;
+};
+
+const closeSettingsPanel = () => {
+    isSettingsPanelOpened.value = false;
+};
 </script>
 
 <template>
@@ -307,108 +342,143 @@ const onToggleFullscreen = async () => {
         <div ref="mapEl" class="map-container"></div>
 
         <div class="ui-safe-container">
-            <Transition name="fade">
-                <LoadingScreen v-if="loading" :progress="progress" />
+            <Transition name="ui-layer-fade">
+                <div v-if="!isSettingsPanelOpened" class="map-ui-layer">
+                    <Transition name="fade">
+                        <LoadingScreen v-if="loading" :progress="progress" />
+                    </Transition>
+
+                    <TopBar
+                        :fuel="fuel"
+                        :game-connected="gameConnected"
+                        :game-time="gameTime"
+                        :rest-stop-minutes="restStopMinutes"
+                        :rest-stop-time="restStoptime"
+                        :truck-speed="truckSpeed"
+                        :is-web="isWeb"
+                    />
+
+                    <div class="left-buttons" v-if="isElectron || isMobile">
+                        <HudButton
+                            icon-name="material-symbols:arrow-back-rounded"
+                            :onClick="goHome"
+                        />
+                        <HudButton
+                            icon-name="flowbite:cog-outline"
+                            :onClick="openSettingsPanel"
+                        />
+                    </div>
+
+                    <div class="left-buttons" v-else>
+                        <HudButton
+                            icon-name="flowbite:cog-outline"
+                            :onClick="openSettingsPanel"
+                        />
+                    </div>
+
+                    <NotificationGeneral
+                        :icon-name="
+                            isClickingEnabled
+                                ? 'i-tabler:hand-click'
+                                : 'i-tabler:hand-click-off'
+                        "
+                        :trigger="clickingNotificationTrigger"
+                        :text="
+                            isClickingEnabled
+                                ? 'Tapping Enabled'
+                                : 'Tapping Disabled'
+                        "
+                        :icon-color="isClickingEnabled ? '#4caf50' : '#dd4a34'"
+                    />
+
+                    <NotificationRoute
+                        :is-route-found="routeFound"
+                        :is-calculating-route="isCalculatingRoute"
+                    />
+
+                    <div class="hud-buttons">
+                        <HudButton
+                            v-if="isWeb"
+                            icon-name="gridicons:fullscreen"
+                            :onClick="onToggleFullscreen"
+                        />
+                        <HudButton
+                            icon-name="ix:navigation"
+                            :onClick="onResetNorth"
+                        />
+                        <HudButton
+                            icon-name="fe:target"
+                            :onClick="lockCamera"
+                        />
+                        <HudButton
+                            :class="
+                                isClickingEnabled ? 'red-icon' : 'green-icon'
+                            "
+                            :icon-name="
+                                isClickingEnabled
+                                    ? 'i-tabler:hand-click-off'
+                                    : 'i-tabler:hand-click'
+                            "
+                            :onClick="toggleEnableClicking"
+                        />
+                    </div>
+
+                    <SpeedLimit
+                        :class="{
+                            'pos-default': !isRouteActive || isSheetHidden,
+                            'pos-expanded': isSheetExpanded && isRouteActive,
+                            'pos-collapsed':
+                                !isSheetExpanded &&
+                                isRouteActive &&
+                                !isSheetHidden,
+                        }"
+                        :truck-speed="truckSpeed"
+                        :speed-limit="speedLimit"
+                    />
+
+                    <div class="warnings">
+                        <WarningSlide
+                            :show-if="hasInGameMarker && isRouteActive"
+                            :reset-on="isRouteActive"
+                            text="External Route Detected: Set Waypoint"
+                        />
+
+                        <WarningSlide
+                            :show-if="!gameConnected"
+                            :reset-on="gameConnected"
+                            text="Game Offline"
+                        />
+                    </div>
+
+                    <Transition name="sheet-slide" @after-leave="onSheetClosed">
+                        <SheetSlide
+                            v-if="isRouteActive"
+                            :clear-route-state="clearRouteState"
+                            :has-active-job="hasActiveJob"
+                            :on-start-navigation="onStartNavigation"
+                            :destination-name="destinationName"
+                            v-model:is-sheet-expanded="isSheetExpanded"
+                            v-model:is-sheet-hidden="isSheetHidden"
+                            :route-distance="routeDistance"
+                            :route-eta="routeEta"
+                            :speed-limit="speedLimit"
+                            :truck-speed="truckSpeed"
+                        />
+                    </Transition>
+
+                    <TruckMarker
+                        :is-camera-locked="isCameraLocked"
+                        ref="truckMarkerComponent"
+                    />
+                </div>
             </Transition>
 
-            <TopBar
-                :fuel="fuel"
-                :game-connected="gameConnected"
-                :game-time="gameTime"
-                :rest-stop-minutes="restStopMinutes"
-                :rest-stop-time="restStoptime"
-                :truck-speed="truckSpeed"
-            />
-
-            <div class="back-home" v-if="isElectron || isMobile">
-                <HudButton icon-name="i-tabler:arrow-back" :onClick="goHome" />
-            </div>
-
-            <NotificationGeneral
-                :icon-name="
-                    isClickingEnabled
-                        ? 'i-tabler:hand-click'
-                        : 'i-tabler:hand-click-off'
-                "
-                :trigger="clickingNotificationTrigger"
-                :text="
-                    isClickingEnabled ? 'Tapping Enabled' : 'Tapping Disabled'
-                "
-                :icon-color="isClickingEnabled ? '#4caf50' : '#dd4a34'"
-            />
-
-            <NotificationRoute
-                :is-route-found="routeFound"
-                :is-calculating-route="isCalculatingRoute"
-            />
-
-            <div class="hud-buttons">
-                <HudButton
-                    v-if="isWeb"
-                    icon-name="gridicons:fullscreen"
-                    :onClick="onToggleFullscreen"
-                />
-                <HudButton icon-name="ix:navigation" :onClick="onResetNorth" />
-                <HudButton icon-name="fe:target" :onClick="lockCamera" />
-                <HudButton
-                    :class="isClickingEnabled ? 'red-icon' : 'green-icon'"
-                    :icon-name="
-                        isClickingEnabled
-                            ? 'i-tabler:hand-click-off'
-                            : 'i-tabler:hand-click'
-                    "
-                    :onClick="toggleEnableClicking"
-                />
-            </div>
-
-            <SpeedLimit
-                :class="{
-                    'pos-default': !isRouteActive || isSheetHidden,
-                    'pos-expanded': isSheetExpanded && isRouteActive,
-                    'pos-collapsed':
-                        !isSheetExpanded && isRouteActive && !isSheetHidden,
-                }"
-                :truck-speed="truckSpeed"
-                :speed-limit="speedLimit"
-            />
-
-            <div
-                class="warnings"
-                :style="{ '--bottom-nav-height': isWeb ? '60px' : '0px' }"
-            >
-                <WarningSlide
-                    :show-if="hasInGameMarker && isRouteActive"
-                    :reset-on="isRouteActive"
-                    text="External Route Detected: Set Waypoint"
-                />
-
-                <WarningSlide
-                    :show-if="!gameConnected"
-                    :reset-on="gameConnected"
-                    text="Game Offline"
-                />
-            </div>
-
-            <Transition name="sheet-slide" @after-leave="onSheetClosed">
-                <SheetSlide
-                    v-if="isRouteActive"
-                    :clear-route-state="clearRouteState"
-                    :has-active-job="hasActiveJob"
-                    :on-start-navigation="onStartNavigation"
-                    :destination-name="destinationName"
-                    v-model:is-sheet-expanded="isSheetExpanded"
-                    v-model:is-sheet-hidden="isSheetHidden"
-                    :route-distance="routeDistance"
-                    :route-eta="routeEta"
-                    :speed-limit="speedLimit"
-                    :truck-speed="truckSpeed"
+            <Transition name="panel-slide">
+                <SettingsPanel
+                    v-if="isSettingsPanelOpened"
+                    :close-panel="closeSettingsPanel"
                 />
             </Transition>
-
-            <TruckMarker
-                :is-camera-locked="isCameraLocked"
-                ref="truckMarkerComponent"
-            />
         </div>
     </div>
 </template>

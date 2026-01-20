@@ -5,7 +5,7 @@
 // ----------------------> MAP <----------------------
 .map-container {
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
 
     background-color: #272d39;
 }
@@ -15,7 +15,7 @@
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     pointer-events: none;
     z-index: 10;
 }
@@ -26,15 +26,20 @@
 
 .full-page-wrapper {
     overflow: hidden;
+    position: fixed;
 }
 
-.back-home {
+.left-buttons {
     position: absolute;
     top: calc($game-info-bar-height + 1.8rem);
     left: 10px;
 
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+
     @media (orientation: portrait) {
-        top: calc($game-info-bar-height + env(safe-area-inset-top) + 1.8rem);
+        top: calc($game-info-bar-height + 1.8rem);
     }
 }
 
@@ -48,7 +53,7 @@
     gap: 0.6rem;
 
     @media (orientation: portrait) {
-        top: calc($game-info-bar-height + env(safe-area-inset-top) + 1.8rem);
+        top: calc($game-info-bar-height + 1.8rem);
     }
 
     .red-icon {
@@ -62,7 +67,7 @@
 
 .warnings {
     position: absolute;
-    bottom: calc(var(--bottom-nav-height) + 30px);
+    bottom: calc(30px + $game-info-bar-height);
     right: -2px;
 
     display: flex;
@@ -76,6 +81,17 @@
 //
 // ----------------------> TRANSITIONS <---------------------- \\
 
+// MAIN LAYER TRANSITIONS
+.ui-layer-fade-enter-active,
+.ui-layer-fade-leave-active {
+    transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.ui-layer-fade-enter-from,
+.ui-layer-fade-leave-to {
+    opacity: 0;
+}
+
 // SHEET SLIDE TRANSITIONS
 .sheet-slide-enter-active,
 .sheet-slide-leave-active {
@@ -86,6 +102,19 @@
 .sheet-slide-leave-to {
     transform: translateY(100%);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0);
+
+    opacity: 0;
+}
+
+// PANEL SLIDE TRANSITIONS
+.panel-slide-enter-active,
+.panel-slide-leave-active {
+    transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.panel-slide-enter-from,
+.panel-slide-leave-to {
+    transform: translateX(-100%);
 
     opacity: 0;
 }

@@ -16,8 +16,10 @@
 
     background-color: $primaryColor;
 
-    @media (orientation: portrait) {
-        height: calc($game-info-bar-height + env(safe-area-inset-top));
+    &.is-native {
+        @media (orientation: portrait) {
+            height: calc($game-info-bar-height);
+        }
     }
 }
 

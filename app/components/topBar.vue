@@ -6,11 +6,12 @@ defineProps<{
     restStopMinutes: number;
     restStopTime: string;
     gameTime: string;
+    isWeb: boolean;
 }>();
 </script>
 
 <template>
-    <div class="game-information">
+    <div class="game-information" :class="{ 'is-native': !isWeb }">
         <div class="truck-info">
             <div class="truck-speed-div">
                 <div class="road-perspective"></div>

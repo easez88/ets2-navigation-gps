@@ -17,9 +17,6 @@ body {
     background-color: $primaryColor;
     -webkit-tap-highlight-color: transparent;
     padding-top: env(safe-area-inset-top);
-    // padding-bottom: env(safe-area-inset-bottom);
-    // padding-left: env(safe-area-inset-left);
-    // padding-right: env(safe-area-inset-right);
 }
 
 html,
@@ -28,6 +25,10 @@ body,
     -ms-overflow-style: none;
     scrollbar-width: none;
     overflow: hidden;
+    height: 100%;
+    width: 100%;
+
+    overscroll-behavior: none;
 }
 
 input {

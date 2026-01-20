@@ -4,7 +4,7 @@ import { blendWithBg, lightenColor } from "~/assets/utils/colors";
 import { BlobSource } from "~/assets/utils/BlobSource";
 
 export async function initializeMap(
-    container: HTMLElement
+    container: HTMLElement,
 ): Promise<MapLibreGl> {
     const appTheme = AppSettings.theme;
 
@@ -293,7 +293,7 @@ export async function initializeMap(
                     "fill-opacity": 0.5,
                 },
             },
-            "ets2-lines"
+            "ets2-lines",
         );
 
         // PREFABS FOR SERVICE AREAS     ETC
@@ -309,36 +309,36 @@ export async function initializeMap(
                         0,
                         blendWithBg(
                             lightenColor(AppSettings.theme.defaultColor, 0.3),
-                            0.6
+                            0.6,
                         ),
                         1,
                         blendWithBg(
                             lightenColor(AppSettings.theme.defaultColor, 0.3),
-                            0.6
+                            0.6,
                         ),
                         2,
                         blendWithBg(
                             lightenColor(AppSettings.theme.defaultColor, 0),
-                            0.6
+                            0.6,
                         ),
                         3,
                         blendWithBg(
                             lightenColor(AppSettings.theme.defaultColor, 0.3),
-                            0.6
+                            0.6,
                         ),
                         4,
                         blendWithBg(
                             lightenColor(AppSettings.theme.defaultColor, 0.3),
-                            0.6
+                            0.6,
                         ),
                         blendWithBg(
                             lightenColor(AppSettings.theme.defaultColor, 0.3),
-                            0.6
+                            0.6,
                         ),
                     ],
                 },
             },
-            "ets2-lines"
+            "ets2-lines",
         );
 
         // DISPLAYING BUILDINGS
@@ -364,7 +364,7 @@ export async function initializeMap(
                     ],
                 },
             },
-            "ets2-lines"
+            "ets2-lines",
         );
 
         // DISPLAYING VILLAGE NAMES
@@ -448,7 +448,7 @@ export async function initializeMap(
                     "line-opacity": 0.4,
                 },
             },
-            "ets2-lines"
+            "ets2-lines",
         );
 
         // DISPLAY ROAD NUMBERS ON MAP
@@ -651,7 +651,7 @@ export async function initializeMap(
                     "symbol-placement": "point",
                 },
             },
-            "gas-icons"
+            "gas-icons",
         );
 
         // DISPLAY SERVICE LOCATIONS ON MAP
@@ -779,7 +779,7 @@ export async function initializeMap(
                     "symbol-placement": "point",
                 },
             },
-            "gas-icons"
+            "gas-icons",
         );
 
         // DISPLAY COMPANIES LOCATIONS ON MAP
