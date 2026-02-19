@@ -51,6 +51,8 @@ export const useSettings = () => {
         } else {
             settings.value = { ...DEFAULT_SETTINGS };
         }
+
+        applySideEffects();
     };
 
     const resetSettings = () => {

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { darkenColor, lightenColor } from "~/assets/utils/colors";
-import { AppSettings } from "~~/shared/constants/appSettings";
 
 const gradientId = `truck-gradient-${Math.random().toString(36).slice(2, 9)}`;
 

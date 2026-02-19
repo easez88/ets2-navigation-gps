@@ -3,10 +3,9 @@ import { ref, onMounted, shallowRef, Transition } from "vue";
 import "maplibre-gl/dist/maplibre-gl.css";
 import maplibregl from "maplibre-gl";
 import type TruckMarker from "./truckMarker.vue";
-import SpeedLimit from "./speedLimit.vue";
+import SpeedLimit from "../Navigation/speedLimit.vue";
 import { usePlatform } from "~/composables/Platform";
 import eruda from "eruda";
-import { AppSettings } from "~~/shared/constants/appSettings";
 import { blendWithBg, lightenColor } from "~/assets/utils/colors";
 
 defineProps<{ goHome: () => void }>();
@@ -108,6 +107,11 @@ const {
     routeFound,
 } = useRouteController(map, adjacency, nodeCoords);
 
+//
+//
+// Settings Controller
+const { settings } = useSettings();
+
 let uiTimer: ReturnType<typeof setTimeout> | null = null;
 
 // We check if it has active job, if it has one, plot a route
@@ -161,7 +165,7 @@ watch(
 
 // We check each time the theme color changes to udate the map libre appsettings.default theme color
 watch(
-    () => AppSettings.theme.defaultColor,
+    () => settings.value.themeColor,
     (newColor) => {
         if (!map.value) return;
 
