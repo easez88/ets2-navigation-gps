@@ -84,7 +84,9 @@
     height: 34px;
     width: 34px;
     background-color: var(--theme-color);
-    transition: transform 0.2s, border-color 0.2s;
+    transition:
+        transform 0.2s,
+        border-color 0.2s;
 
     border-radius: 3px;
 
@@ -121,6 +123,12 @@
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.4);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.color-picker {
+    background-color: $secondaryColor;
+    border-radius: 4px;
+    padding: 4px;
 }
 
 /**

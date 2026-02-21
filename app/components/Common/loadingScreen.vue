@@ -24,7 +24,7 @@ const { settings } = useSettings();
                 }"
             ></div>
         </div>
-        <h2>Loading Route Data...</h2>
+        <h2 class="loading-text">Loading Route Data...</h2>
     </div>
 </template>
 

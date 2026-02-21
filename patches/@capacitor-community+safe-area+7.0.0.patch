@@ -1,0 +1,13 @@
+diff --git a/node_modules/@capacitor-community/safe-area/android/build.gradle b/node_modules/@capacitor-community/safe-area/android/build.gradle
+index f85b403..ca6c76b 100644
+--- a/node_modules/@capacitor-community/safe-area/android/build.gradle
++++ b/node_modules/@capacitor-community/safe-area/android/build.gradle
+@@ -35,7 +35,7 @@ android {
+     buildTypes {
+         release {
+             minifyEnabled false
+-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
++            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+         }
+     }
+     lintOptions {

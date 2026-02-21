@@ -94,6 +94,9 @@ form {
 
         border-style: none;
         border-radius: 6px;
+
+        color: $primaryColor;
+        background-color: $white-font-text;
     }
 
     input:focus {

@@ -29,18 +29,28 @@ const currentColor = computed({
             <p>{{ optionTitle }}</p>
         </div>
         <div class="color-options">
-            <color-picker
-                v-model="currentColor"
-                v-slot="{ color, show }"
-                @change="currentColor = $event.hex"
-                :with-colors-history="6"
-            >
-                <button
+            <UPopover>
+                <UButton
                     class="change-color-btn nav-btn settings-btn"
-                    @click="show"
-                    :style="{ backgroundColor: color.value }"
-                ></button>
-            </color-picker>
+                    :style="{ backgroundColor: currentColor }"
+                >
+                    <template #leading>
+                        <span
+                            :style="{ backgroundColor: currentColor }"
+                            class="color-preview"
+                        />
+                    </template>
+                </UButton>
+
+                <template #content>
+                    <UColorPicker
+                        :throttle="200"
+                        size="xl"
+                        v-model="currentColor"
+                        class="color-picker"
+                    />
+                </template>
+            </UPopover>
         </div>
     </div>
 </template>

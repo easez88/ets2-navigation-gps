@@ -3,9 +3,9 @@ export default defineNuxtConfig({
     compatibilityDate: "2025-07-15",
     devtools: { enabled: false },
     ssr: false,
-    modules: ["@nuxt/icon", "nuxt-color-picker"],
+    modules: ["@nuxt/icon", "@nuxt/ui"],
 
-    css: ["~/assets/scss/global/_transitions.scss"],
+    css: ["~/assets/css/main.css", "~/assets/scss/global/_transitions.scss"],
 
     vite: {
         css: {
