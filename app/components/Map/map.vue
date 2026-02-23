@@ -272,17 +272,6 @@ function telemetryClick() {
     if (!truckCoords.value) return;
     if (!map.value) return;
 
-    const truckSource = map.value.getSource(
-        "truck-source",
-    ) as maplibregl.GeoJSONSource;
-    if (truckSource) {
-        truckSource.setData({
-            type: "Feature",
-            geometry: { type: "Point", coordinates: truckCoords.value },
-            properties: { heading: truckHeading.value },
-        });
-    }
-
     followTruck(truckCoords.value, truckHeading.value);
 
     if (isRouteActive.value) {

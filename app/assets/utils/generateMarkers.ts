@@ -38,12 +38,12 @@ export const generateDestinationIcon = (
     baseColor: string,
 ): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
-        const dark = darkenColor(baseColor, 0.19);
-        const darkInner = darkenColor(baseColor, 0.05);
+        const dark = darkenColor(baseColor, 0.2);
+        const lightInner = lightenColor(baseColor, 0.05);
 
         const svgString = `
         <svg width="18" height="23" viewBox="0 0 32 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M16 42 C16 42 32 26 32 16 C32 7.6 24.837 0 16 0 C7.6 0 0 7.6 0 16 C0 26 16 42 16 42 Z" fill="${darkInner}" />
+            <path d="M16 42 C16 42 32 26 32 16 C32 7.6 24.837 0 16 0 C7.6 0 0 7.6 0 16 C0 26 16 42 16 42 Z" fill="${lightInner}" />
             
             <!-- Middle Darker Ring -->
             <circle cx="16" cy="16" r="11" fill="${dark}" />

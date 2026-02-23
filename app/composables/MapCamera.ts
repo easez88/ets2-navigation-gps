@@ -8,6 +8,9 @@ export const useMapCamera = (map: Ref<Map | null>) => {
     let targetHeading: number = 0;
     let animationFrameId: number | null = null;
 
+    let currentTruckCoords: [number, number] | null = null;
+    let currentTruckHeading: number = 0;
+
     let isEasing = false;
     let easeTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -18,13 +21,41 @@ export const useMapCamera = (map: Ref<Map | null>) => {
         const deltaTime = timestamp - lastTime;
         lastTime = timestamp;
 
+        const dt = Math.min(deltaTime, 100);
+        const lerpFactor = 1 - Math.pow(0.9, dt / 16.666);
+
+        if (map.value && targetCoords) {
+            if (!currentTruckCoords) {
+                currentTruckCoords = [...targetCoords] as [number, number];
+                currentTruckHeading = targetHeading;
+            } else {
+                currentTruckCoords[0] +=
+                    (targetCoords[0] - currentTruckCoords[0]) * lerpFactor;
+                currentTruckCoords[1] +=
+                    (targetCoords[1] - currentTruckCoords[1]) * lerpFactor;
+
+                let hDiff = targetHeading - currentTruckHeading;
+                while (hDiff < -180) hDiff += 360;
+                while (hDiff > 180) hDiff -= 360;
+                currentTruckHeading += hDiff * lerpFactor;
+            }
+
+            const source = map.value.getSource("truck-source") as any;
+            if (source) {
+                source.setData({
+                    type: "Feature",
+                    geometry: {
+                        type: "Point",
+                        coordinates: currentTruckCoords,
+                    },
+                    properties: { heading: currentTruckHeading },
+                });
+            }
+        }
+
         if (isCameraLocked.value && map.value && targetCoords && !isEasing) {
             const currentCenter = map.value.getCenter();
             let currentBearing = map.value.getBearing();
-
-            const dt = Math.min(deltaTime, 100);
-
-            const lerpFactor = 1 - Math.pow(0.9, dt / 16.666);
 
             const lng =
                 currentCenter.lng +
@@ -79,15 +110,13 @@ export const useMapCamera = (map: Ref<Map | null>) => {
             map.value!.on(event, (e: any) => {
                 if (e.originalEvent && isCameraLocked.value) {
                     isCameraLocked.value = false;
-                    targetCoords = null;
                 }
             });
         });
     };
 
     const followTruck = (coords: [number, number], heading: number) => {
-        if (!isCameraLocked.value || !map.value) return;
-
+        if (!map.value) return;
         targetCoords = coords;
         targetHeading = heading;
     };
@@ -115,7 +144,7 @@ export const useMapCamera = (map: Ref<Map | null>) => {
             center: coords,
             bearing: isNavigating.value ? heading : 0,
             zoom: 11,
-            pitch: 35,
+            pitch: 45,
             duration: 300,
             offset: [0, 50],
         });
