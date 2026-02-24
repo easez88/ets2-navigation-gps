@@ -279,6 +279,7 @@ onMounted(async () => {
                 ` ${e.lngLat.lat.toFixed(5)}, ${e.lngLat.lng.toFixed(5)}`,
             ); // KEEP FOR DEBUGGING BUGGED AREAS
             if (!isClickingEnabled.value) return;
+            if (!gameConnected.value) return;
             if (!truckCoords.value) return;
 
             await handleRouteClick(

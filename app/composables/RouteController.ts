@@ -31,6 +31,7 @@ export const useRouteController = (
     const savedDestination = ref<[number, number] | null>(null);
 
     const isRouteActive = ref(false);
+    const isYardStart = ref(false);
 
     const startNodeId = ref<number | null>(null);
     const endNodeId = ref<number | null>(null);
@@ -369,15 +370,10 @@ export const useRouteController = (
                 10,
             );
 
-            if (!startConfig) {
-                console.warn(
-                    "Could not find a valid road matching truck heading.",
-                );
-                return;
-            }
+            if (!startConfig) return;
+            isYardStart.value = startConfig.type === "yard";
 
             startNodeId.value = startConfig.toId;
-
             const result = await findFlexibleRoute(
                 startNodeId.value!,
                 toRaw(clickCoords),
@@ -429,6 +425,7 @@ export const useRouteController = (
         }
     }
 
+    const lastRecalcTime = ref(0);
     const updateRouteProgress = (
         truckCoords: [number, number],
         truckHeading: number,
@@ -465,15 +462,27 @@ export const useRouteController = (
         }
 
         currentRouteIndex.value = bestIndex;
+        const now = Date.now();
+        if (now - lastRecalcTime.value < 5000) return;
+        let activeThreshold = DEVIATION_THRESHOLD_SQ;
 
-        if (minSqDist > DEVIATION_THRESHOLD_SQ) {
+        if (isYardStart.value) {
+            if (bestIndex > 0) {
+                isYardStart.value = false;
+            } else {
+                activeThreshold = 0.005;
+            }
+        }
+
+        if (minSqDist > activeThreshold) {
             if (!isCalculating.value && savedDestination.value) {
+                lastRecalcTime.value = now;
                 console.log("Deviation detected! Recalculating...");
                 handleRouteClick(
                     toRaw(savedDestination.value),
                     truckCoords,
                     truckHeading,
-                    false, // TODO: GET IF ITS A JOB OR NOT (FALSE FOR JOB, TRUE FOR MANUAL ENDMARK)
+                    false,
                 );
                 return;
             }
@@ -518,6 +527,7 @@ export const useRouteController = (
         endNodeId.value = null;
         currentRoutePath.value = null;
         savedDestination.value = null;
+        isYardStart.value = false;
         updateSettings("lastDestination", null);
     }
 

@@ -119,6 +119,7 @@ export const useMapCamera = (map: Ref<Map | null>) => {
 
         breakLockEvents.forEach((event) => {
             map.value!.on(event, (e: any) => {
+                if (isEasing) return;
                 if (isCameraLocked.value) {
                     isCameraLocked.value = false;
                 }

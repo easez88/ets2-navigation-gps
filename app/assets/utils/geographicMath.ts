@@ -1,4 +1,4 @@
-export const DEVIATION_THRESHOLD_SQ = 0.0005;
+export const DEVIATION_THRESHOLD_SQ = 0.00005;
 
 export function toRad(deg: number) {
     return (deg * Math.PI) / 180;
@@ -30,7 +30,7 @@ export function getBearing(start: [number, number], end: [number, number]) {
 export function getSignedAngle(
     p1: [number, number],
     p2: [number, number],
-    p3: [number, number]
+    p3: [number, number],
 ) {
     const b1 = getBearing(p1, p2);
     const b2 = getBearing(p2, p3);
@@ -48,7 +48,7 @@ export function getAngleDiff(angle1: number, angle2: number): number {
 export function getSqDistToSegment(
     p: [number, number],
     a: [number, number],
-    b: [number, number]
+    b: [number, number],
 ): number {
     let x = a[0],
         y = a[1],
