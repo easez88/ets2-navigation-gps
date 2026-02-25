@@ -53,4 +53,8 @@ defineProps<{
     </div>
 </template>
 
-<style lang="scss" scoped src="~/assets/scss/scoped/topBar.scss"></style>
+<style
+    lang="scss"
+    scoped
+    src="~/assets/scss/scoped/navigation/topBar.scss"
+></style>

@@ -11,7 +11,7 @@ defineProps<{
     <div
         @click.prevent="selectCard(gameName)"
         class="game-btn"
-        :style="{ width: `${width}px` }"
+        :style="{ maxWidth: `${width}px` }"
     >
         <img :src="`/images/game-covers/${gameName}.webp`" alt="" />
         <div class="game-name-wrapper">
@@ -24,5 +24,5 @@ defineProps<{
 <style
     lang="scss"
     scoped
-    src="~/assets/scss/scoped/Common/gameSelectButton.scss"
+    src="~/assets/scss/scoped/common/gameSelectButton.scss"
 ></style>

@@ -4,7 +4,7 @@ const props = defineProps<{
     goToDesktopIndex: () => void;
 }>();
 const { selectedGame, commitSelection } = useGameSelection();
-const { isElectron } = usePlatform();
+const { isWeb, isElectron } = usePlatform();
 
 const handleStart = () => {
     commitSelection();
@@ -27,8 +27,13 @@ const handleStart = () => {
             <span>Select Game</span>
         </div>
 
-        <div class="game-selection">
-            <GameSelection v-model="selectedGame" :width="950" />
+        <div class="game-selection" :style="{ width: isWeb ? '80%' : '85%' }">
+            <div class="select-btns">
+                <GameSelection
+                    v-model="selectedGame"
+                    :width="isWeb ? 450 : 950"
+                />
+            </div>
         </div>
 
         <button
@@ -45,5 +50,5 @@ const handleStart = () => {
 <style
     lang="scss"
     scoped
-    src="~/assets/scss/scoped/Layouts/chooseGame.scss"
+    src="~/assets/scss/scoped/layouts/chooseGame.scss"
 ></style>

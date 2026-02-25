@@ -129,4 +129,8 @@ const handleConnect = async () => {
     </section>
 </template>
 
-<style scoped lang="scss" src="~/assets/scss/scoped/mobileIndex.scss"></style>
+<style
+    scoped
+    lang="scss"
+    src="~/assets/scss/scoped/layouts/mobileIndex.scss"
+></style>

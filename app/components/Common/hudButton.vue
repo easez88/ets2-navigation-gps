@@ -11,5 +11,5 @@ defineProps<{ onClick: () => void; iconName: string }>();
 <style
     lang="scss"
     scoped
-    src="~/assets/scss/scoped/Common/hudButton.scss"
+    src="~/assets/scss/scoped/common/hudButton.scss"
 ></style>

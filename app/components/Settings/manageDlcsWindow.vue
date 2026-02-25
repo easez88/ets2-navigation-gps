@@ -87,4 +87,7 @@ const toggleDlc = (id: number) => {
     </div>
 </template>
 
-<style lang="scss" src="~/assets/scss/scoped/manageDlcsWindow.scss"></style>
+<style
+    lang="scss"
+    src="~/assets/scss/scoped/settings/manageDlcsWindow.scss"
+></style>

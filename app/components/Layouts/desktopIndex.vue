@@ -137,4 +137,8 @@ const openLink = async (url: string) => {
     </section>
 </template>
 
-<style scoped lang="scss" src="~/assets/scss/scoped/desktopIndex.scss"></style>
+<style
+    scoped
+    lang="scss"
+    src="~/assets/scss/scoped/layouts/desktopIndex.scss"
+></style>

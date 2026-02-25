@@ -23,7 +23,7 @@ watch(
                 isVisible.value = false;
             }, 2000);
         }
-    }
+    },
 );
 </script>
 
@@ -50,5 +50,5 @@ watch(
 <style
     scoped
     lang="scss"
-    src="~/assets/scss/scoped/notificationRoute.scss"
+    src="~/assets/scss/scoped/notifications/notificationRoute.scss"
 ></style>

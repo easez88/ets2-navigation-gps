@@ -74,22 +74,43 @@ export async function initializeMap(
         ],
     };
 
-    const map = new maplibregl.Map({
-        container,
-        style,
-        center: [10, 50],
-        zoom: 6,
-        minZoom: 5,
-        maxZoom: 11.5,
-        maxPitch: 45,
-        fadeDuration: 0,
-        attributionControl: false,
-        collectResourceTiming: false,
-        maxBounds: [
-            [-28, 25], // [[west, south]
-            [50, 74], // [east, north]]
-        ],
-    });
+    const gameMap = {
+        ets: {
+            container,
+            style,
+            center: [10, 50],
+            zoom: 6,
+            minZoom: 5,
+            maxZoom: 11.5,
+            maxPitch: 45,
+            fadeDuration: 0,
+            attributionControl: false,
+            collectResourceTiming: false,
+            maxBounds: [
+                [-28, 25], // [[west, south]
+                [50, 74], // [east, north]]
+            ],
+        },
+
+        ats: {
+            container,
+            style,
+            center: [-98, 39],
+            zoom: 6,
+            minZoom: 4,
+            maxZoom: 10.5,
+            maxPitch: 45,
+            fadeDuration: 0,
+            attributionControl: false,
+            collectResourceTiming: false,
+            maxBounds: [
+                [-130, 23], // SW
+                [-60, 55], // NE
+            ],
+        },
+    };
+
+    const map = new maplibregl.Map(gameMap.ats as maplibregl.MapOptions);
 
     map.on("error", (e) => {
         console.error(">>> MAP ERROR EVENT:", e);
@@ -104,33 +125,6 @@ export async function initializeMap(
     });
 
     //// =================> LATER ATS UPDATE <=================
-    // const map = {
-    //     ets: {
-    //         container,
-    //         style,
-    //         center: [10, 50],
-    //         zoom: 6,
-    //         minZoom: 5,
-    //         maxZoom: 11.5,
-    //         maxPitch: 45,
-    //         localIdeographFontFamily: "Quicksand",
-    //         attributionControl: false,
-    //         bounds: [
-    //             [-22, 25],
-    //             [50, 70],
-    //         ],
-    //     },
-
-    //     ats: {
-    //         center: [-98, 39],
-    //         bounds: [
-    //             [-130, 23], // SW
-    //             [-60, 55], // NE
-    //         ],
-    //         minZoom: 4,
-    //         maxZoom: 10.5,
-    //     },
-    // };
 
     map.on("load", async () => {
         map.addSource("ets2-all-data", {

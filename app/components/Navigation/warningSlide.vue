@@ -13,7 +13,7 @@ watch(
         if (newValue) {
             isExpanded.value = false;
         }
-    }
+    },
 );
 
 const onToggleExpanded = () => {
@@ -44,4 +44,8 @@ const onToggleExpanded = () => {
     </Transition>
 </template>
 
-<style lang="scss" scoped src="~/assets/scss/scoped/warningSlide.scss"></style>
+<style
+    lang="scss"
+    scoped
+    src="~/assets/scss/scoped/navigation/warningSlide.scss"
+></style>

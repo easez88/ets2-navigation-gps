@@ -387,18 +387,11 @@ const toggleSettingsPanel = () => {
                         :is-web="isWeb"
                     />
 
-                    <div class="left-buttons" v-if="isElectron || isMobile">
+                    <div class="left-buttons">
                         <HudButton
                             icon-name="material-symbols:arrow-back-rounded"
                             :onClick="goHome"
                         />
-                        <HudButton
-                            icon-name="flowbite:cog-outline"
-                            :onClick="toggleSettingsPanel"
-                        />
-                    </div>
-
-                    <div class="left-buttons" v-else>
                         <HudButton
                             icon-name="flowbite:cog-outline"
                             :onClick="toggleSettingsPanel"
@@ -507,4 +500,4 @@ const toggleSettingsPanel = () => {
     </div>
 </template>
 
-<style scoped lang="scss" src="~/assets/scss/scoped/map.scss"></style>
+<style scoped lang="scss" src="~/assets/scss/scoped/map/map.scss"></style>

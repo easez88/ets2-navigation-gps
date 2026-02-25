@@ -67,5 +67,5 @@ const isVisible = computed(() => {
 <style
     lang="scss"
     scoped
-    src="~/assets/scss/scoped/notificationRoute.scss"
+    src="~/assets/scss/scoped/notifications/notificationRoute.scss"
 ></style>

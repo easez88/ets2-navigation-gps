@@ -29,5 +29,5 @@ const selectCard = (game: "ats" | "ets2" | null) => {
 <style
     lang="scss"
     scoped
-    src="~/assets/scss/scoped/Common/gameSelection.scss"
+    src="~/assets/scss/scoped/common/gameSelection.scss"
 ></style>

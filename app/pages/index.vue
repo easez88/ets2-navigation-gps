@@ -66,31 +66,36 @@ const goToDesktopIndex = () => {
 const goHome = () => {
     if (isElectron.value) currentView.value = "desktopHome";
     if (isMobile.value) currentView.value = "mobileHome";
+    if (isWeb.value) currentView.value = "chooseGame";
 };
 </script>
 
 <template>
-    <Transition name="page-fade">
-        <DesktopIndex
-            v-if="currentView === 'desktopHome'"
-            :launch-choose-game="launchChooseGame"
-        />
-    </Transition>
+    <template v-if="isElectron">
+        <Transition name="page-fade">
+            <DesktopIndex
+                v-show="currentView === 'desktopHome'"
+                :launch-choose-game="launchChooseGame"
+            />
+        </Transition>
+    </template>
 
     <Transition name="page-fade">
         <ChooseGame
-            v-if="currentView === 'chooseGame'"
+            v-show="currentView === 'chooseGame'"
             :launch-map="launchMap"
             :go-to-desktop-index="goToDesktopIndex"
         />
     </Transition>
 
-    <Transition name="page-fade">
-        <MobileIndex
-            v-if="currentView === 'mobileHome'"
-            @connected="currentView = 'map'"
-        />
-    </Transition>
+    <template v-if="isMobile">
+        <Transition name="page-fade">
+            <MobileIndex
+                v-show="currentView === 'mobileHome'"
+                @connected="currentView = 'map'"
+            />
+        </Transition>
+    </template>
 
     <Transition name="page-fade">
         <LazyMap v-if="currentView === 'map'" :goHome="goHome" />

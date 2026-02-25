@@ -6,6 +6,14 @@ export const useGameSelection = () => {
         () => settings.value.selectedGame,
     );
 
+    watch(
+        () => settings.value.selectedGame,
+        (newVal) => {
+            if (newVal === null) return;
+            selectedGame.value = newVal;
+        },
+    );
+
     const selectGame = (game: "ats" | "ets2" | null) => {
         selectedGame.value = game;
     };

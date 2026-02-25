@@ -68,4 +68,7 @@ const toggleDlcPanel = () => {
     </div>
 </template>
 
-<style lang="scss" src="~/assets/scss/scoped/settingsPanel.scss"></style>
+<style
+    lang="scss"
+    src="~/assets/scss/scoped/settings/settingsPanel.scss"
+></style>

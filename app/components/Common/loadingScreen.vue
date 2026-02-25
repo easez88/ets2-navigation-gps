@@ -31,5 +31,5 @@ const { settings } = useSettings();
 <style
     lang="scss"
     scoped
-    src="~/assets/scss/scoped/Common/loadingScreen.scss"
+    src="~/assets/scss/scoped/common/loadingScreen.scss"
 ></style>
