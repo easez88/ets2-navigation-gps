@@ -1,8 +1,11 @@
 import { ref } from "vue";
-import type { TelemetryData } from "../../shared/types/Telemetry/TelemetryData";
-import { convertGameToGeo } from "~/assets/utils/gameToGeo";
-import { getBearing } from "~/assets/utils/geographicMath";
-import { convertTelemtryTime } from "~/assets/utils/graphHelpers";
+import type { TelemetryData } from "../assets/utils/telemetry/telemetryTypes";
+import {
+    convertEts2ToGeo,
+    convertAtsToGeo,
+} from "~/assets/utils/map/converters";
+import { getBearing } from "~/assets/utils/map/maths";
+import { convertTelemtryTime } from "~/assets/utils/routing/helpers";
 import { CapacitorHttp } from "@capacitor/core";
 
 export interface TelemetryUpdate {
@@ -277,7 +280,6 @@ export function useEtsTelemetry() {
         onUpdate?: (data: TelemetryUpdate) => void,
     ) {
         // Truck Placement
-
         // GAME STATE
         const gameConnected = data.game.connected;
         const hasInGameMarker =
@@ -292,7 +294,7 @@ export function useEtsTelemetry() {
         // TRUCK STATE
         const { x, z } = data.truck.placement;
         const rawGameHeading = data.truck.placement.heading;
-        const truckCoords = convertGameToGeo(x, z);
+        const truckCoords = convertEts2ToGeo(x, z);
         const truckSpeed = Math.max(0, Math.floor(data.truck.speed));
         const truckHeading = getCorrectHeading(
             rawGameHeading,

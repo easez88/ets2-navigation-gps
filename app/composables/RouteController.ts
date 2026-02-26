@@ -1,16 +1,16 @@
 import { distance, lineString, nearestPointOnLine, point } from "@turf/turf";
 import maplibregl from "maplibre-gl";
-import { generateDestinationIcon } from "~/assets/utils/generateMarkers";
+import { generateDestinationIcon } from "~/assets/utils/map/markers";
 import {
     getBearing,
     getSqDistToSegment,
     DEVIATION_THRESHOLD_SQ,
     getSquaredDist,
-} from "~/assets/utils/geographicMath";
+} from "~/assets/utils/map/maths";
 import {
     deleteMapLibreData,
     setMapLibreData,
-} from "~/assets/utils/mapHelpers.ts";
+} from "~/assets/utils/map/helpers";
 
 export const useRouteController = (
     map: Ref<maplibregl.Map | null>,

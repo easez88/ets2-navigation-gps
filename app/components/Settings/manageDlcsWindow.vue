@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const { settings, updateSettings } = useSettings();
-import { ets2Expansions } from "~~/shared/constants/ets2Expansions";
+import { ets2Expansions } from "~/data/ets2/ets2Expansions";
 
 defineProps<{ closePanel: () => void }>();
 

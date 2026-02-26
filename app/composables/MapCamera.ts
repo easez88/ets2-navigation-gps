@@ -1,5 +1,5 @@
 import { Map } from "maplibre-gl";
-import { setMapLibreData } from "~/assets/utils/mapHelpers.ts";
+import { setMapLibreData } from "~/assets/utils/map/helpers";
 
 export const useMapCamera = (map: Ref<Map | null>) => {
     const isCameraLocked = ref(false);

@@ -5,8 +5,8 @@ import maplibregl from "maplibre-gl";
 import SpeedLimit from "../Navigation/speedLimit.vue";
 import { usePlatform } from "~/composables/Platform";
 import eruda from "eruda";
-import { blendWithBg, lightenColor } from "~/assets/utils/colors";
-import { generateTruckIcon } from "~/assets/utils/generateMarkers";
+import { blendWithBg, lightenColor } from "~/assets/utils/shared/colors";
+import { generateTruckIcon } from "~/assets/utils/map/markers";
 
 defineProps<{ goHome: () => void }>();
 

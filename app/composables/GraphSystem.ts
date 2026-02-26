@@ -1,6 +1,6 @@
 import RBush from "rbush";
-import { loadGraph } from "~/assets/utils/clientGraph";
-import { haversine } from "~/assets/utils/graphHelpers";
+import { loadGraph } from "~/assets/utils/routing/clientGraph";
+import { haversine } from "~/assets/utils/routing/helpers";
 
 interface NodeIndexItem {
     minX: number;

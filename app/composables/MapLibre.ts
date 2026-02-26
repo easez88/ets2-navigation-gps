@@ -1,6 +1,6 @@
 import type { Map as MapLibreGl, StyleSpecification } from "maplibre-gl";
-import { blendWithBg, lightenColor } from "~/assets/utils/colors";
-import { BlobSource } from "~/assets/utils/BlobSource";
+import { blendWithBg, lightenColor } from "~/assets/utils/shared/colors";
+import { BlobSource } from "~/assets/utils/shared/BlobSource";
 
 export async function initializeMap(
     container: HTMLElement,
@@ -16,7 +16,7 @@ export async function initializeMap(
     maplibregl.addProtocol("pmtiles", protocol.tile);
 
     async function loadPmtiles(fileName: string, key: string) {
-        const url = `${window.location.origin}/data/ets2/map-data/tiles/${fileName}.mp3`;
+        const url = `${window.location.origin}/data/${settings.value.selectedGame}/map-data/tiles/${fileName}.mp3`;
 
         try {
             const response = await fetch(url);
@@ -95,9 +95,9 @@ export async function initializeMap(
         ats: {
             container,
             style,
-            center: [-98, 39],
+            center: [-115, 40],
             zoom: 6,
-            minZoom: 4,
+            minZoom: 5,
             maxZoom: 10.5,
             maxPitch: 45,
             fadeDuration: 0,

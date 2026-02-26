@@ -1,4 +1,4 @@
-import { AppSettings } from "~~/shared/constants/appSettings";
+import { AppSettings } from "~/constants/appSettings";
 
 export interface AppSettingsState {
     themeColor: string;

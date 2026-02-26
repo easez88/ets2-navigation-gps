@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { darkenColor } from "~/assets/utils/colors";
+import { darkenColor } from "~/assets/utils/shared/colors";
 
 defineProps<{ progress: number }>();
 const { settings } = useSettings();

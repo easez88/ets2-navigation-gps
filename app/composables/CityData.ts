@@ -1,9 +1,9 @@
 import { shallowRef, ref } from "vue";
-import { convertGeoToGame } from "~/assets/utils/gameToGeo";
+import { convertGeoToEts2 } from "~/assets/utils/map/converters";
 import {
     getScaleMultiplier,
     type SimpleCityNode,
-} from "~/assets/utils/routeAlgorithm";
+} from "~/assets/utils/routing/algorithm";
 
 // --- Types ---
 interface GeoJsonProperties {
@@ -195,11 +195,11 @@ export function useCityData() {
         let totalGameHours = 0;
 
         for (let i = 0; i < pathCoords.length - 1; i++) {
-            const point1 = convertGeoToGame(
+            const point1 = convertGeoToEts2(
                 pathCoords[i]![0],
                 pathCoords[i]![1],
             );
-            const point2 = convertGeoToGame(
+            const point2 = convertGeoToEts2(
                 pathCoords[i + 1]![0],
                 pathCoords[i + 1]![1],
             );
@@ -247,7 +247,7 @@ export function useCityData() {
         for (const feature of collection.features) {
             const [lng, lat] = feature.geometry.coordinates;
 
-            const [gameX, gameZ] = convertGeoToGame(lng, lat);
+            const [gameX, gameZ] = convertGeoToEts2(lng, lat);
 
             let radius = 900;
             if (

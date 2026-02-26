@@ -20,8 +20,8 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import RBush from "rbush";
 import * as turf from "@turf/turf";
 import path from "path";
-import type { Node, Edge, Coord } from "../../shared/types";
-import { haversine } from "../assets/utils/graphHelpers.ts";
+import type { Node, Edge, Coord } from "../assets/utils/routing/graphTypes";
+import { haversine } from "../assets/utils/routing/helpers";
 
 interface InputFeature {
     type: "Feature";
