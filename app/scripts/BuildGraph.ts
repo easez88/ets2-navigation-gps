@@ -119,62 +119,6 @@ function storeFeaturePoints(features: InputFeature[]): PointWithDist[][] {
         }
     }
 
-    const injectPoint = (pt: Coord, sourceIdx: number, isStart: boolean) => {
-        const searchDistDeg = 0.0001; // ~10 meters
-        const candidates = tree.search({
-            minX: pt[0] - searchDistDeg,
-            minY: pt[1] - searchDistDeg,
-            maxX: pt[0] + searchDistDeg,
-            maxY: pt[1] + searchDistDeg,
-        });
-
-        for (const seg of candidates) {
-            if (seg.idx === sourceIdx) continue;
-
-            const v = features[seg.idx].geometry.coordinates[seg.vIdx];
-            const w = features[seg.idx].geometry.coordinates[seg.vIdx + 1];
-
-            // Raw math instead of Turf
-            const result = distToSegment(pt, v, w);
-
-            if (result.dist < 0.005) {
-                // 5 meters
-                const snapCoord = result.pos;
-                // Calculate absolute distance along the target road
-                const startDist = featureMetadata[seg.idx].distances[seg.vIdx];
-                const segLen =
-                    featureMetadata[seg.idx].distances[seg.vIdx + 1] -
-                    startDist;
-                const snapDistKm = startDist + result.t! * segLen;
-
-                // Add to target
-                splitPoints[seg.idx].push({
-                    coord: snapCoord,
-                    locKm: snapDistKm,
-                });
-
-                // Sync source
-                const sourceList = splitPoints[sourceIdx];
-                if (isStart) {
-                    sourceList[0] = { coord: snapCoord, locKm: 0 };
-                } else {
-                    sourceList[sourceList.length - 1] = {
-                        coord: snapCoord,
-                        locKm: featureMetadata[sourceIdx].totalLength,
-                    };
-                }
-            }
-        }
-    };
-
-    console.log("Injecting intersections (Segment Search Mode)...");
-    for (let i = 0; i < features.length; i++) {
-        const coords = features[i].geometry.coordinates;
-        injectPoint(coords[0], i, true);
-        injectPoint(coords[coords.length - 1], i, false);
-        if (i % 10000 === 0 && i > 0) console.log(`Processed ${i} features...`);
-    }
-
     return splitPoints;
 }
 
