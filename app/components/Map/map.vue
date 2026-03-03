@@ -95,6 +95,7 @@ const {
     destroyWorker,
     isRouteActive,
     routeFound,
+    getSnappedCoords,
 } = useRouteController(map, adjacency, nodeCoords);
 
 //
@@ -327,13 +328,14 @@ onUnmounted(() => {
 });
 
 function onTelemetryUpdate() {
-    if (!truckCoords.value) return;
-    if (!map.value) return;
+    if (!truckCoords.value || !map.value) return;
 
-    followTruck(truckCoords.value, truckHeading.value);
+    const finalCoords = getSnappedCoords(truckCoords.value, truckHeading.value);
+
+    followTruck(finalCoords, truckHeading.value);
 
     if (isRouteActive.value) {
-        updateRouteProgress(truckCoords.value, truckHeading.value);
+        updateRouteProgress(finalCoords, truckHeading.value);
     }
 }
 

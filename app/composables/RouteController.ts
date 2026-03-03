@@ -103,6 +103,51 @@ export const useRouteController = (
         isWorkerReady.value = true;
     }
 
+    function projectPointToSegment(
+        p: [number, number],
+        v: [number, number],
+        w: [number, number],
+    ): [number, number] {
+        const l2 = getSquaredDist(v, w);
+        if (l2 === 0) return [v[0], v[1]];
+        let t =
+            ((p[0] - v[0]) * (w[0] - v[0]) + (p[1] - v[1]) * (w[1] - v[1])) /
+            l2;
+        t = Math.max(0, Math.min(1, t)); // clamp to segment bounds
+        return [v[0] + t * (w[0] - v[0]), v[1] + t * (w[1] - v[1])];
+    }
+
+    function getSnappedCoords(
+        truckCoords: [number, number],
+        truckHeading: number,
+    ): [number, number] {
+        const config = findBestStartConfiguration(truckCoords, truckHeading, 2);
+
+        if (!config || !config.projectedCoords) {
+            return truckCoords;
+        }
+
+        const [tx, ty] = truckCoords;
+        const [px, py] = config.projectedCoords;
+
+        // Math-based distance (1 degree of coords is roughly 111km)
+        const distSq = getSquaredDist(truckCoords, config.projectedCoords);
+        const distKm = Math.sqrt(distSq) * 111;
+
+        // - If < 10m from the line, trust the raw GPS (perfectly smooth around curves).
+        // - If > 10m off road (map tiles are misaligned), smoothly increase the snap pull up to 90%.
+        let alpha = 0;
+        if (distKm > 0.01) {
+            alpha = Math.min((distKm - 0.01) / 0.03, 0.9);
+        }
+
+        if (alpha === 0) {
+            return truckCoords;
+        }
+
+        return [tx + (px - tx) * alpha, ty + (py - ty) * alpha];
+    }
+
     function calculateRouteInWorker(
         startId: number,
         possibleEnds: number[],
@@ -148,9 +193,6 @@ export const useRouteController = (
         truckHeading: number,
         _ignoredLimit: number = 20,
     ) {
-        const truckPt = point(truckCoords);
-        const normalizedTruckHeading = ((truckHeading % 360) + 360) % 360;
-
         if (adjacency.size === 0 || nodeCoords.size === 0) {
             console.error("CRITICAL: Graph data is empty!");
             return null;
@@ -179,18 +221,25 @@ export const useRouteController = (
                 if (!toPos) continue;
 
                 let roadBearing = getBearing(fromPos, toPos);
-                roadBearing = ((roadBearing % 360) + 360) % 360;
 
-                let diff = Math.abs(normalizedTruckHeading - roadBearing);
+                let diff = Math.abs(truckHeading - roadBearing);
                 if (diff > 180) diff = 360 - diff;
 
-                const roadLine = lineString([fromPos, toPos]);
-                const snapped = nearestPointOnLine(roadLine, truckPt);
-                const distKm = snapped.properties.dist;
+                const isOpposite = diff > 90;
+                const trueDiff = isOpposite ? 180 - diff : diff;
 
-                if (distKm === undefined) continue;
+                const visualRoadBearing = isOpposite
+                    ? (roadBearing + 180) % 360
+                    : roadBearing;
 
-                const score = distKm + diff * 0.001;
+                const projected = projectPointToSegment(
+                    truckCoords,
+                    fromPos,
+                    toPos,
+                );
+                const distSq = getSquaredDist(truckCoords, projected);
+                const distKm = Math.sqrt(distSq) * 111;
+                const score = distKm + trueDiff * 0.001;
 
                 if (score < minScore) {
                     minScore = score;
@@ -198,10 +247,8 @@ export const useRouteController = (
                         type: "road",
                         fromId: fromNodeId,
                         toId: edge.to,
-                        projectedCoords: snapped.geometry.coordinates as [
-                            number,
-                            number,
-                        ],
+                        projectedCoords: projected,
+                        bearing: visualRoadBearing,
                     };
                 }
             }
@@ -217,9 +264,9 @@ export const useRouteController = (
             const nodePos = nodeCoords.get(nodeId);
             if (!nodePos) continue;
 
-            const dist = distance(truckPt, point(nodePos));
-            if (dist < minNodeDist) {
-                minNodeDist = dist;
+            const distSq = getSquaredDist(truckCoords, nodePos);
+            if (distSq < minNodeDist) {
+                minNodeDist = distSq;
                 closestNodeId = nodeId;
             }
         }
@@ -558,6 +605,7 @@ export const useRouteController = (
         setupRouteLayer,
         handleRouteClick,
         updateRouteProgress,
+        getSnappedCoords,
         clearRouteState,
     };
 };
