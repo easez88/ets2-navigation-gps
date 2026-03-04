@@ -332,6 +332,7 @@ export async function initializeMap(
             type: "symbol",
             source: "all-data",
             "source-layer": "spritelocations",
+            filter: ["!=", ["get", "poiType"], "road"],
             minzoom: 8,
             layout: {
                 "icon-image": ["get", "sprite"],
@@ -344,7 +345,17 @@ export async function initializeMap(
                     10,
                     1.5,
                 ],
-                "icon-allow-overlap": true,
+                "icon-allow-overlap": false,
+                "icon-padding": 5,
+                "symbol-sort-key": [
+                    "match",
+                    ["get", "sprite"],
+                    "gas_ico",
+                    1,
+                    "service-ico",
+                    2,
+                    10,
+                ],
                 "symbol-placement": "point",
             },
         });
