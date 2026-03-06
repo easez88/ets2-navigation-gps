@@ -36,6 +36,11 @@ While the core navigation works, the project is far from perfect. Creating the r
 >
 > Please note that performance optimization is still a work in progress. Depending on your device (especially older tablets or phones), the map rendering might be slow or laggy. I am working on improving this!
 
+> [!WARNING]
+> **Dual-Game Setup (ETS2 & ATS)**
+>
+> If you have both Euro Truck Simulator 2 and American Truck Simulator installed, please ensure they are located on the **same drive**. The telemetry server needs to detect both game installations to function correctly; if one is missing or on a separate drive, the application may throw errors during initialization.
+
 # Installation via .exe File
 
 1. Download the latest setup file from the
