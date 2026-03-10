@@ -27,7 +27,7 @@ export const useMapCamera = (map: Ref<Map | null>) => {
         lastTime = timestamp;
 
         const dt = Math.min(deltaTime, 100);
-        const lerpFactor = 1 - Math.pow(0.85, dt / 16.666);
+        const lerpFactor = 1 - Math.pow(0.92, dt / 16.666);
 
         let iconMoved = false;
 
@@ -60,7 +60,7 @@ export const useMapCamera = (map: Ref<Map | null>) => {
                 }
             }
 
-            if (iconMoved && timestamp - lastDataUpdate > 33) {
+            if (iconMoved) {
                 setMapLibreData(
                     map.value,
                     "truck-source",
@@ -68,7 +68,6 @@ export const useMapCamera = (map: Ref<Map | null>) => {
                     currentTruckCoords,
                     { heading: currentTruckHeading },
                 );
-                lastDataUpdate = timestamp;
             }
         }
 
