@@ -2,7 +2,7 @@ import { defineEventHandler } from "h3";
 
 export default defineEventHandler(async () => {
     try {
-        const data = await $fetch("http://localhost:25555/api/ets2/telemetry", {
+        const data = await $fetch("http://localhost:31377/api/ets2/telemetry", {
             timeout: 1500,
             retry: 0,
         });

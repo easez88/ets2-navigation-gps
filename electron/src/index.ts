@@ -96,10 +96,10 @@ app.on("activate", async function () {
  */
 async function startTelemetryServer() {
     try {
-        const exeName = "Ets2Telemetry.exe";
+        const exeName = "TruckSimGPS_Server.exe";
         const serverPath = app.isPackaged
-            ? path.join(process.resourcesPath, "telemetry-server", exeName)
-            : path.join(app.getAppPath(), "bin", "telemetry-server", exeName);
+            ? path.join(process.resourcesPath, "telemetry-server", "TruckSim GPS Telemetry Server", exeName)
+            : path.join(app.getAppPath(), "bin", "telemetry-server", "TruckSim GPS Telemetry Server", exeName);
 
         if (!existsSync(serverPath)) {
             dialog.showErrorBox(
@@ -148,7 +148,7 @@ async function startTelemetryServer() {
 }
 
 function killTelemetryServer() {
-    const exeName = "Ets2Telemetry.exe";
+    const exeName = "TruckSimGPS_Server.exe";
     try {
         execSync(`taskkill /F /IM ${exeName} /T`, { stdio: "ignore" });
         console.log("Telemetry server killed.");
@@ -213,7 +213,7 @@ async function getAvailablePort(startingPort: number): Promise<number> {
 
 async function fetchTelemetry(ip: string | "localhost") {
     try {
-        const response = await fetch(`http://${ip}:25555/api/ets2/telemetry`);
+        const response = await fetch(`http://${ip}:31377/api/ets2/telemetry`);
         if (!response.ok) {
             console.warn(
                 `Telemetry fetch failed with status ${response.status}: ${response.statusText}`,
@@ -285,7 +285,7 @@ ipcMain.on(
 );
 
 ipcMain.handle("check-server-status", () => {
-    const exeName = "Ets2Telemetry.exe";
+    const exeName = "TruckSimGPS_Server.exe";
 
     try {
         const runningProcesses = execSync(

@@ -64,7 +64,7 @@ export function useEtsTelemetry() {
         try {
             if (isMobile.value) {
                 const response = await CapacitorHttp.get({
-                    url: `http://${settings.value.savedIP}:25555/api/ets2/telemetry`,
+                    url: `http://${settings.value.savedIP}:31377/api/ets2/telemetry`,
                     connectTimeout: 1000,
                 });
 

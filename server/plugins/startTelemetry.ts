@@ -3,14 +3,14 @@ import { spawn, execSync, spawnSync } from "node:child_process";
 import { existsSync, rmSync } from "node:fs";
 import path from "node:path";
 
-const REPO_URL = "https://github.com/Funbit/ets2-telemetry-server.git";
-const FOLDER_NAME = "ets2-telemetry-server";
-const EXE_NAME = "Ets2Telemetry.exe";
+const REPO_URL = "https://github.com/TruckSim-GPS/trucksim-gps-server";
+const FOLDER_NAME = "TruckSim GPS Telemetry Server";
+const EXE_NAME = "TruckSimGPS_Server.exe";
 
 export default defineNitroPlugin((nitroApp) => {
     const rootDir = process.cwd();
     const serverDir = path.join(rootDir, FOLDER_NAME);
-    const serverExeDir = path.join(serverDir, "server");
+    const serverExeDir = path.join(serverDir);
     const serverExePath = path.join(serverExeDir, EXE_NAME);
 
     if (!existsSync(serverDir)) {
@@ -48,7 +48,7 @@ export default defineNitroPlugin((nitroApp) => {
             return false;
         }
     };
-
+     console.log(serverExePath);
     if (!isAppRunning() && existsSync(serverExePath)) {
         console.log(`[Telemetry] Starting background process...`);
         const child = spawn(EXE_NAME, [], {
