@@ -77,8 +77,9 @@ export function getJobState(data: TelemetryData) {
     const hasActiveJob = data.job.income > 0;
     const destinationCity = data.job.destinationCity;
     const destinationCompany = data.job.destinationCompany;
+    const destinationCompanyId = data.job.destinationCompanyId;
 
-    return { hasActiveJob, destinationCity, destinationCompany };
+    return { hasActiveJob, destinationCity, destinationCompany, destinationCompanyId };
 }
 
 export function verifyGameByTruck(

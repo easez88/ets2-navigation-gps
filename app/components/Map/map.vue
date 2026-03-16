@@ -49,6 +49,7 @@ const {
     hasActiveJob,
     destinationCity,
     destinationCompany,
+    destinationCompanyId
 } = useEtsTelemetry();
 
 //
@@ -125,12 +126,12 @@ watch(
     [
         hasActiveJob,
         destinationCity,
-        destinationCompany,
+        destinationCompanyId,
         gameConnected,
         loading,
         isWorkerReady,
     ],
-    async ([hasJob, city, company, isConnected, isLoading, isWorkerReady]) => {
+    async ([hasJob, city, companyId, isConnected, isLoading, isWorkerReady]) => {
         if (isLoading || !isWorkerReady) return;
 
         if (!isConnected) {
@@ -145,14 +146,14 @@ watch(
             return;
         }
 
-        const newJobKey = hasJob ? `${city}|${company}` : "";
+        const newJobKey = hasJob ? `${city}|${companyId}` : "";
 
         if (routeTimer) clearTimeout(routeTimer);
 
         routeTimer = setTimeout(async () => {
             if (hasJob && newJobKey !== currentJobKey.value) {
                 if (!truckCoords.value) return;
-                const destCoords = findDestinationCoords(city, company);
+                const destCoords = findDestinationCoords(city, companyId);
 
                 if (destCoords) {
                     clearRouteState();

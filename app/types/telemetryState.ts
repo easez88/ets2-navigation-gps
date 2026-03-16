@@ -33,4 +33,5 @@ export interface JobState {
     sourceCompany: string;
     destinationCity: string;
     destinationCompany: string;
+    destinationCompanyId: string;
 }

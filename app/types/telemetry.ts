@@ -122,6 +122,7 @@ export interface JobData {
     sourceCompany: string;
     destinationCity: string;
     destinationCompany: string;
+    destinationCompanyId: string;
 }
 
 export interface NavigationData {

@@ -15,6 +15,7 @@ import type {
     TelemetryUpdate,
     TelemetryData,
 } from "~/types";
+import { destination } from "@turf/turf";
 
 const isTelemetryConnected = ref(false);
 const isRunning = ref(false);
@@ -48,6 +49,7 @@ const jobState = reactive<JobState>({
     sourceCompany: "0",
     destinationCity: "0",
     destinationCompany: "0",
+    destinationCompanyId: "0",
 });
 
 let lastPosition: [number, number] | null = null;
@@ -198,6 +200,7 @@ export function useEtsTelemetry() {
             hasActiveJob: hasActiveJob,
             destinationCity: destinationCity,
             destinationCompany: destinationCompany,
+            destinationCompanyId: data.job.destinationCompanyId,
         });
 
         if (onUpdate) {

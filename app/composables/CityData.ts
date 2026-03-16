@@ -50,7 +50,6 @@ const cityData = shallowRef<GeoJsonCollection | null>(null);
 const villageData = shallowRef<GeoJsonCollection | null>(null);
 const companiesData = shallowRef<GeoJsonCollection | null>(null);
 const citiesFallbackData = shallowRef<CityFallback[] | null>(null);
-const realCompanyModData = shallowRef<RealCompanyModFallback | null>(null);
 
 const isLoaded = ref(false);
 const optimizedCityNodes = shallowRef<SimpleCityNode[]>([]);
@@ -83,17 +82,14 @@ export function useCityData() {
                 if (citiesFallbackRes.ok)
                     citiesFallbackData.value = await citiesFallbackRes.json();
             } else if (settings.value.selectedGame == "ats") {
-                const [citiesRes, companiesRes, realCompanyModRes] = await Promise.all([
+                const [citiesRes, companiesRes] = await Promise.all([
                     fetch("/data/ats/map-data/cities.geojson"),
                     fetch("/data/ats/map-data/companies.geojson"),
-                    settings.value.profiles.ats.useRealisticCompanyNames ? fetch("/data/ats/map-data/RealCompaniesModVanillaMapping.json") : Promise.resolve(null),
                 ]);
 
                 if (citiesRes.ok) cityData.value = await citiesRes.json();
                 if (companiesRes.ok)
                     companiesData.value = await companiesRes.json();
-                if (realCompanyModRes && realCompanyModRes.ok)
-                    realCompanyModData.value = await realCompanyModRes.json();
             }
 
             const cNodes = processCollection(cityData.value);
@@ -118,7 +114,7 @@ export function useCityData() {
 
     function findDestinationCoords(
         targetCityName: string,
-        targetCompanyName: string,
+        targetCompanyId: string,
     ): [number, number] | null {
         if (!isLoaded.value || !companiesData.value) return null;
 
@@ -159,29 +155,19 @@ export function useCityData() {
             return null;
         }
 
-        const safeCompanyName = targetCompanyName.toLowerCase().trim();
-        const matchedKey = ref<string | undefined>(undefined);
-        
-        if (realCompanyModData.value) {
-            matchedKey.value = Object.keys(realCompanyModData.value).find(key => {
-                const entry = realCompanyModData.value![key];
-                return entry?.sort_name && safeCompanyName.includes(entry.sort_name.toLowerCase().trim());
-            });
-        }
-
+        const safeCompanyId = targetCompanyId.toLowerCase().trim();
         const companyCandidates = companiesData.value.features.filter((f) => {
             const p = f.properties;
 
             return (
                 p.poiType === "company" &&
                 p.poiName &&
-                (p.poiName.toLowerCase().trim() === safeCompanyName ||
-                (matchedKey.value && p["sprite"].includes(matchedKey.value)))
+                p["sprite"].includes(safeCompanyId)
             );
         });
 
         if (companyCandidates.length === 0) {
-            console.warn(`Company not found in data ${targetCompanyName}`);
+            console.warn(`Company not found in data ${targetCompanyId}`);
 
             return [cityCoords[0], cityCoords[1]];
         }
